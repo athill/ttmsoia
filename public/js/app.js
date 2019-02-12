@@ -66049,10 +66049,14 @@ function (_Component) {
     _this = _possibleConstructorReturn(this, _getPrototypeOf(Index).call(this, props));
     _this.state = {
       loaded: false,
-      posts: []
+      posts: [],
+      last: null,
+      prev: null,
+      next: null
     };
     _this._getPosts = _this._getPosts.bind(_assertThisInitialized(_assertThisInitialized(_this)));
     _this._html = _this._html.bind(_assertThisInitialized(_assertThisInitialized(_this)));
+    _this._idFromUrl = _this._idFromUrl.bind(_assertThisInitialized(_assertThisInitialized(_this)));
     return _this;
   }
 
@@ -66071,29 +66075,27 @@ function (_Component) {
 
         _this2.setState({
           loaded: true,
-          posts: response.data
+          posts: response.data,
+          last: response.last_page // prev: this._idFromUrl(response.prev_page_url),
+          // next: this._idFromUrl(response.next_page_url)
+
         });
       });
     }
   }, {
+    key: "_idFromUrl",
+    value: function _idFromUrl(url) {
+      var id = url.replace(/\?page=(\d+)/, '$1');
+      console.log(id);
+      return id;
+    }
+  }, {
     key: "_html",
     value: function _html(content) {
-      var urlPattern = /(\s+)(https?:\/\/(youtu.be\/|www.youtube.com\/watch\/\?v=)(\S+))(\s)/gim;
-      var content2 = content.replace(urlPattern, '$1 $2 $3 $4'); // https://www.youtube.com/watch?v=lyCubBRN24M 
-      // '$1<iframe width="560" height="315" src="$2" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>$4'
-      // this.replace(urlPattern, '<a href="$&">$&</a>')
-
-      /*
-          <iframe width="560" height="315" src="https://www.youtube.com/embed/ZAqnXcqNCx4" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-      */
-
-      if (content !== content2) {
-        console.log('content', content);
-        console.log('content2', content2);
-      }
-
+      var urlPattern = /\s+https?:\/\/(youtu.be\/|www.youtube.com\/watch\?v=)(\S+)\s*/gim;
+      var content2 = content.replace(urlPattern, '<div><iframe width="560" height="315" src="https://www.youtube.com/embed/$2" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>');
       return {
-        __html: content
+        __html: content2
       };
     }
   }, {
@@ -66110,7 +66112,7 @@ function (_Component) {
         className: "row justify-content-center"
       }, react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", {
         className: "col-md-8"
-      }, !loaded && react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("p", null, "Loading ...") || posts.map(function (_ref2) {
+      }, !loaded && react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("p", null, "Loading ...") || react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(react__WEBPACK_IMPORTED_MODULE_1___default.a.Fragment, null, " ", posts.map(function (_ref2) {
         var post_content = _ref2.post_content,
             post_date = _ref2.post_date,
             post_title = _ref2.post_title;
@@ -66134,7 +66136,7 @@ function (_Component) {
       }, react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("a", {
         className: "page-link",
         href: "#"
-      }, "Previous")))))));
+      }, "Previous"))))))));
     }
   }]);
 
