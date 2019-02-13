@@ -1,4 +1,5 @@
 import axios from 'axios';
+import classNames from 'classnames';
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import ReactTruncate from 'react-truncate';
@@ -11,7 +12,8 @@ export default class Index extends Component {
             posts: [],
             last: null,
             prev: null,
-            next: null
+            next: null,
+            current: 1
         };
         this._getPosts = this._getPosts.bind(this);
         this._html = this._html.bind(this);
@@ -29,14 +31,18 @@ export default class Index extends Component {
                 loaded: true,
                 posts: response.data,
                 last: response.last_page,
-                // prev: this._idFromUrl(response.prev_page_url),
-                // next: this._idFromUrl(response.next_page_url)
+                prev: this._idFromUrl(response.prev_page_url),
+                next: this._idFromUrl(response.next_page_url),
+                current: page
             });
         });
     }
 
     _idFromUrl(url) {
-        const id = url.replace(/\?page=(\d+)/, '$1');
+        if (!url) {
+            return url;
+        }
+        const id = url.replace(/.*\?page=(\d+)/, '$1');
         console.log(id);
         return id;
     }
@@ -49,7 +55,13 @@ export default class Index extends Component {
 
 
     render() {
-        const { loaded, posts } = this.state;
+        const { current, last, loaded, next, posts, prev } = this.state;
+        const navigation = [
+            { disabled: current === 1, label: 'first', page: 1 },
+            { disabled: current === 1, label: 'previous', page: prev },
+            { disabled: current === last, label: 'next', page: next },
+            { disabled: current === last, label: 'last', page: last },
+        ];
         return (
             <div className="container">
                 <div className="row justify-content-center">
@@ -60,7 +72,7 @@ export default class Index extends Component {
                                 <div className="post" key={post_title}>
                                     <h2>{ post_title }</h2>
                                     <p>
-                                        <ReactTruncate lines={-1} ellipsis={<span>... <a href='/link/to/article'>Read more</a></span>}>
+                                        <ReactTruncate lines={5} ellipsis={<span>... <a href='/link/to/article'>Read more</a></span>}>
                                             <span dangerouslySetInnerHTML={this._html(post_content)} />
                                         </ReactTruncate>
                                     </p>
@@ -69,7 +81,11 @@ export default class Index extends Component {
                         }
                         <nav aria-label="Page navigation example">
                           <ul className="pagination">
-                            <li className="page-item"><a className="page-link" href="#">Previous</a></li>
+                            {
+                                navigation.map(({ disabled, label, page }) => (
+                                    <li key={label} className={classNames('page-item', { disabled })} onClick={e => this._getPosts(page)}><a className="page-link" href="#">{ label }</a></li>    
+                                ))   
+                            }
                           </ul>
                         </nav>                        
                         </React.Fragment>

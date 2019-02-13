@@ -6013,6 +6013,68 @@ module.exports = {
 
 /***/ }),
 
+/***/ "./node_modules/classnames/index.js":
+/*!******************************************!*\
+  !*** ./node_modules/classnames/index.js ***!
+  \******************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
+  Copyright (c) 2017 Jed Watson.
+  Licensed under the MIT License (MIT), see
+  http://jedwatson.github.io/classnames
+*/
+/* global define */
+
+(function () {
+	'use strict';
+
+	var hasOwn = {}.hasOwnProperty;
+
+	function classNames () {
+		var classes = [];
+
+		for (var i = 0; i < arguments.length; i++) {
+			var arg = arguments[i];
+			if (!arg) continue;
+
+			var argType = typeof arg;
+
+			if (argType === 'string' || argType === 'number') {
+				classes.push(arg);
+			} else if (Array.isArray(arg) && arg.length) {
+				var inner = classNames.apply(null, arg);
+				if (inner) {
+					classes.push(inner);
+				}
+			} else if (argType === 'object') {
+				for (var key in arg) {
+					if (hasOwn.call(arg, key) && arg[key]) {
+						classes.push(key);
+					}
+				}
+			}
+		}
+
+		return classes.join(' ');
+	}
+
+	if ( true && module.exports) {
+		classNames.default = classNames;
+		module.exports = classNames;
+	} else if (true) {
+		// register as 'classnames', consistent with npm package name
+		!(__WEBPACK_AMD_DEFINE_ARRAY__ = [], __WEBPACK_AMD_DEFINE_RESULT__ = (function () {
+			return classNames;
+		}).apply(exports, __WEBPACK_AMD_DEFINE_ARRAY__),
+				__WEBPACK_AMD_DEFINE_RESULT__ !== undefined && (module.exports = __WEBPACK_AMD_DEFINE_RESULT__));
+	} else {}
+}());
+
+
+/***/ }),
+
 /***/ "./node_modules/history/DOMUtils.js":
 /*!******************************************!*\
   !*** ./node_modules/history/DOMUtils.js ***!
@@ -66008,11 +66070,13 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return Index; });
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
-/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var react_dom__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! react-dom */ "./node_modules/react-dom/index.js");
-/* harmony import */ var react_dom__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(react_dom__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var react_truncate__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! react-truncate */ "./node_modules/react-truncate/lib/Truncate.js");
+/* harmony import */ var classnames__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! classnames */ "./node_modules/classnames/index.js");
+/* harmony import */ var classnames__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(classnames__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var react_dom__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! react-dom */ "./node_modules/react-dom/index.js");
+/* harmony import */ var react_dom__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(react_dom__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var react_truncate__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! react-truncate */ "./node_modules/react-truncate/lib/Truncate.js");
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -66036,6 +66100,7 @@ function _assertThisInitialized(self) { if (self === void 0) { throw new Referen
 
 
 
+
 var Index =
 /*#__PURE__*/
 function (_Component) {
@@ -66052,7 +66117,8 @@ function (_Component) {
       posts: [],
       last: null,
       prev: null,
-      next: null
+      next: null,
+      current: 1
     };
     _this._getPosts = _this._getPosts.bind(_assertThisInitialized(_assertThisInitialized(_this)));
     _this._html = _this._html.bind(_assertThisInitialized(_assertThisInitialized(_this)));
@@ -66076,16 +66142,21 @@ function (_Component) {
         _this2.setState({
           loaded: true,
           posts: response.data,
-          last: response.last_page // prev: this._idFromUrl(response.prev_page_url),
-          // next: this._idFromUrl(response.next_page_url)
-
+          last: response.last_page,
+          prev: _this2._idFromUrl(response.prev_page_url),
+          next: _this2._idFromUrl(response.next_page_url),
+          current: page
         });
       });
     }
   }, {
     key: "_idFromUrl",
     value: function _idFromUrl(url) {
-      var id = url.replace(/\?page=(\d+)/, '$1');
+      if (!url) {
+        return url;
+      }
+
+      var id = url.replace(/.*\?page=(\d+)/, '$1');
       console.log(id);
       return id;
     }
@@ -66104,44 +66175,76 @@ function (_Component) {
       var _this3 = this;
 
       var _this$state = this.state,
+          current = _this$state.current,
+          last = _this$state.last,
           loaded = _this$state.loaded,
-          posts = _this$state.posts;
-      return react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", {
+          next = _this$state.next,
+          posts = _this$state.posts,
+          prev = _this$state.prev;
+      var navigation = [{
+        disabled: current === 1,
+        label: 'first',
+        page: 1
+      }, {
+        disabled: current === 1,
+        label: 'previous',
+        page: prev
+      }, {
+        disabled: current === last,
+        label: 'next',
+        page: next
+      }, {
+        disabled: current === last,
+        label: 'last',
+        page: last
+      }];
+      return react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement("div", {
         className: "container"
-      }, react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", {
+      }, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement("div", {
         className: "row justify-content-center"
-      }, react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", {
+      }, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement("div", {
         className: "col-md-8"
-      }, !loaded && react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("p", null, "Loading ...") || react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(react__WEBPACK_IMPORTED_MODULE_1___default.a.Fragment, null, " ", posts.map(function (_ref2) {
+      }, !loaded && react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement("p", null, "Loading ...") || react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(react__WEBPACK_IMPORTED_MODULE_2___default.a.Fragment, null, " ", posts.map(function (_ref2) {
         var post_content = _ref2.post_content,
             post_date = _ref2.post_date,
             post_title = _ref2.post_title;
-        return react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("div", {
+        return react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement("div", {
           className: "post",
           key: post_title
-        }, react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("h2", null, post_title), react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("p", null, react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement(react_truncate__WEBPACK_IMPORTED_MODULE_3__["default"], {
-          lines: -1,
-          ellipsis: react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("span", null, "... ", react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("a", {
+        }, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement("h2", null, post_title), react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement("p", null, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(react_truncate__WEBPACK_IMPORTED_MODULE_4__["default"], {
+          lines: 5,
+          ellipsis: react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement("span", null, "... ", react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement("a", {
             href: "/link/to/article"
           }, "Read more"))
-        }, react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("span", {
+        }, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement("span", {
           dangerouslySetInnerHTML: _this3._html(post_content)
         }))));
-      }), react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("nav", {
+      }), react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement("nav", {
         "aria-label": "Page navigation example"
-      }, react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("ul", {
+      }, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement("ul", {
         className: "pagination"
-      }, react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("li", {
-        className: "page-item"
-      }, react__WEBPACK_IMPORTED_MODULE_1___default.a.createElement("a", {
-        className: "page-link",
-        href: "#"
-      }, "Previous"))))))));
+      }, navigation.map(function (_ref3) {
+        var disabled = _ref3.disabled,
+            label = _ref3.label,
+            page = _ref3.page;
+        return react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement("li", {
+          key: label,
+          className: classnames__WEBPACK_IMPORTED_MODULE_1___default()('page-item', {
+            disabled: disabled
+          }),
+          onClick: function onClick(e) {
+            return _this3._getPosts(page);
+          }
+        }, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement("a", {
+          className: "page-link",
+          href: "#"
+        }, label));
+      })))))));
     }
   }]);
 
   return Index;
-}(react__WEBPACK_IMPORTED_MODULE_1__["Component"]);
+}(react__WEBPACK_IMPORTED_MODULE_2__["Component"]);
 
 
 
