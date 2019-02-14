@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+use Illuminate\Support\Facades\Cache;
 
 use App\Post;
 use Illuminate\Http\Request;
@@ -12,14 +13,17 @@ class PostController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        return Post::where([
-                ['post_type', 'post'],
-                ['post_status', 'publish']
-            ]) 
-            ->orderBy('ID', 'desc')
-            ->paginate(10);
+        $page = $request->has('page') ? $request->query('page') : 1;
+        return Cache::remember('posts_page_' . $page, 3, function() use($page) {
+            return Post::where([
+                    ['post_type', 'post'],
+                    ['post_status', 'publish']
+                ]) 
+                ->orderBy('ID', 'desc')
+                ->paginate(10);
+        });
     }
 
     /**
