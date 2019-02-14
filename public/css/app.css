@@ -10491,8 +10491,47 @@ a.text-dark:focus {
   }
 }
 
-.navbar-laravel {
-  background-color: #fff;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+body {
+  background-color: black;
+}
+
+#header {
+  padding: 2em 0;
+  color: white;
+}
+
+#header a,
+#header a:active,
+#header a:visited,
+#header a:hover {
+  color: white;
+}
+
+#posts {
+  color: white;
+  background-color: #555;
+  border-radius: 1em;
+  padding: 1em;
+}
+
+#posts .post {
+  background-color: #999;
+  color: black;
+  border-radius: 1em;
+  padding: 1em;
+  margin-bottom: 1em;
+}
+
+#posts .post a,
+#posts .post a:active,
+#posts .post a:visited,
+#posts .post a:hover {
+  color: #900;
+}
+
+#footer {
+  padding: 2em 0;
+  color: white;
+  text-align: center;
 }
 

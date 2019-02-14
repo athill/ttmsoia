@@ -66033,7 +66033,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react_dom__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react_dom__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var react_router_dom__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! react-router-dom */ "./node_modules/react-router-dom/es/index.js");
 /* harmony import */ var _history__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../history */ "./resources/js/history.js");
-/* harmony import */ var _Posts__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./Posts */ "./resources/js/components/Posts.js");
+/* harmony import */ var _Layout__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./Layout */ "./resources/js/components/Layout.js");
+/* harmony import */ var _Posts__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./Posts */ "./resources/js/components/Posts.js");
+
 
 
 
@@ -66043,13 +66045,13 @@ __webpack_require__.r(__webpack_exports__);
 var App = function App() {
   return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_2__["Router"], {
     history: _history__WEBPACK_IMPORTED_MODULE_3__["default"]
-  }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_2__["Route"], {
+  }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(_Layout__WEBPACK_IMPORTED_MODULE_4__["default"], null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_2__["Route"], {
     path: "/",
     exact: true,
-    component: _Posts__WEBPACK_IMPORTED_MODULE_4__["default"]
+    component: _Posts__WEBPACK_IMPORTED_MODULE_5__["default"]
   }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_2__["Route"], {
     path: "/posts/:page?",
-    component: _Posts__WEBPACK_IMPORTED_MODULE_4__["default"]
+    component: _Posts__WEBPACK_IMPORTED_MODULE_5__["default"]
   })));
 };
 
@@ -66058,6 +66060,43 @@ var App = function App() {
 if (document.getElementById('app')) {
   react_dom__WEBPACK_IMPORTED_MODULE_1___default.a.render(react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(App, null), document.getElementById('app'));
 }
+
+/***/ }),
+
+/***/ "./resources/js/components/Layout.js":
+/*!*******************************************!*\
+  !*** ./resources/js/components/Layout.js ***!
+  \*******************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var react_router_dom__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! react-router-dom */ "./node_modules/react-router-dom/es/index.js");
+
+
+
+var Layout = function Layout(_ref) {
+  var children = _ref.children;
+  return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", {
+    className: "container",
+    id: "layout"
+  }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("header", {
+    id: "header"
+  }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("h1", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_1__["Link"], {
+    to: "/"
+  }, "trying to make sense of it all"))), children, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("footer", {
+    id: "footer"
+  }, "\xA9 ", new Date().getFullYear(), " ", react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("a", {
+    href: "//andyhill.us",
+    target: "_blank",
+    rel: "noopener"
+  }, "Andy Hill")));
+};
+
+/* harmony default export */ __webpack_exports__["default"] = (Layout);
 
 /***/ }),
 
@@ -66220,8 +66259,9 @@ function (_Component) {
       }, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement("div", {
         className: "row justify-content-center"
       }, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement("div", {
-        className: "col-md-8"
-      }, !loaded && react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement("p", null, "Loading ...") || react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(react__WEBPACK_IMPORTED_MODULE_2___default.a.Fragment, null, " ", posts.map(function (_ref2) {
+        id: "posts",
+        className: "col-md-10"
+      }, !loaded && react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement("p", null, "Loading ...") || react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement("div", null, posts.map(function (_ref2) {
         var post_content = _ref2.post_content,
             post_date = _ref2.post_date,
             post_title = _ref2.post_title;

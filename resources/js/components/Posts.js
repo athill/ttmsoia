@@ -75,9 +75,10 @@ export default class Posts extends Component {
         return (
             <div className="container">
                 <div className="row justify-content-center">
-                    <div className="col-md-8">
+                    <div id="posts" className="col-md-10">
                     { !loaded && <p>Loading ...</p> || (
-                        <React.Fragment> {
+                        <div> 
+                        {
                             posts.map(({ post_content, post_date, post_title }) => (
                                 <div className="post" key={post_title}>
                                     <h2>{ post_title }</h2>
@@ -98,7 +99,7 @@ export default class Posts extends Component {
                             }
                           </ul>
                         </nav>                        
-                        </React.Fragment>
+                        </div>
                     )}
                     </div>
                 </div>
