@@ -81,7 +81,7 @@ export default class Posts extends Component {
                         {
                             posts.map(({ post_content, post_date, post_title }) => (
                                 <div className="post" key={post_title}>
-                                    <h2>{ post_title }</h2>
+                                    <h2 className="d-flex justify-content-between"><Link to={``}>{ post_title }</Link> <small>{ new Date(post_date).toLocaleString() }</small></h2>
                                     <p>
                                         <ReactTruncate lines={5} ellipsis={<span>... <a href='/link/to/article'>Read more</a></span>}>
                                             <span dangerouslySetInnerHTML={this._html(post_content)} />

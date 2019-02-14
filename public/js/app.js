@@ -66268,7 +66268,11 @@ function (_Component) {
         return react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement("div", {
           className: "post",
           key: post_title
-        }, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement("h2", null, post_title), react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement("p", null, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(react_truncate__WEBPACK_IMPORTED_MODULE_5__["default"], {
+        }, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement("h2", {
+          className: "d-flex justify-content-between"
+        }, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_4__["Link"], {
+          to: ""
+        }, post_title), " ", react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement("small", null, new Date(post_date).toLocaleString())), react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement("p", null, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(react_truncate__WEBPACK_IMPORTED_MODULE_5__["default"], {
           lines: 5,
           ellipsis: react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement("span", null, "... ", react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement("a", {
             href: "/link/to/article"

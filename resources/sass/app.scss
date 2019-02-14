@@ -36,7 +36,15 @@ $red: #900;
 		margin-bottom: 1em;
 		a, a:active, a:visited, a:hover {
 			color: $red;
-		}		
+		}	
+		h2 {
+			a, a:active, a:visited, a:hover {
+				color: black;
+			}
+			small {
+				font-size: 1rem;
+			}
+		}
 	}
 }
 

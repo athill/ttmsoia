@@ -10529,6 +10529,17 @@ body {
   color: #900;
 }
 
+#posts .post h2 a,
+#posts .post h2 a:active,
+#posts .post h2 a:visited,
+#posts .post h2 a:hover {
+  color: black;
+}
+
+#posts .post h2 small {
+  font-size: 1rem;
+}
+
 #footer {
   padding: 2em 0;
   color: white;
