@@ -8,6 +8,9 @@ use Illuminate\Http\Request;
 
 class PostController extends Controller
 {
+
+    const CACHE_TIMEOUT = 60 * 24; //minutes
+
     /**
      * Display a listing of the resource.
      *
@@ -16,7 +19,7 @@ class PostController extends Controller
     public function index(Request $request)
     {
         $page = $request->has('page') ? $request->query('page') : 1;
-        return Cache::remember('posts_page_' . $page, 3, function() use($page) {
+        return Cache::remember('posts_page_' . $page, self::CACHE_TIMEOUT, function() use($page) {
             return Post::where([
                     ['post_type', 'post'],
                     ['post_status', 'publish']
