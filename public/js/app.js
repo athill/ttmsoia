@@ -66033,7 +66033,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react_dom__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(react_dom__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var react_router_dom__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! react-router-dom */ "./node_modules/react-router-dom/es/index.js");
 /* harmony import */ var _history__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../history */ "./resources/js/history.js");
-/* harmony import */ var _Index__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./Index */ "./resources/js/components/Index.js");
+/* harmony import */ var _Posts__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./Posts */ "./resources/js/components/Posts.js");
 
 
 
@@ -66043,11 +66043,14 @@ __webpack_require__.r(__webpack_exports__);
 var App = function App() {
   return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_2__["Router"], {
     history: _history__WEBPACK_IMPORTED_MODULE_3__["default"]
-  }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_2__["Route"], {
+  }, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", null, react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_2__["Route"], {
     path: "/",
     exact: true,
-    component: _Index__WEBPACK_IMPORTED_MODULE_4__["default"]
-  }));
+    component: _Posts__WEBPACK_IMPORTED_MODULE_4__["default"]
+  }), react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_2__["Route"], {
+    path: "/posts/:page?",
+    component: _Posts__WEBPACK_IMPORTED_MODULE_4__["default"]
+  })));
 };
 
 /* harmony default export */ __webpack_exports__["default"] = (App);
@@ -66058,16 +66061,16 @@ if (document.getElementById('app')) {
 
 /***/ }),
 
-/***/ "./resources/js/components/Index.js":
+/***/ "./resources/js/components/Posts.js":
 /*!******************************************!*\
-  !*** ./resources/js/components/Index.js ***!
+  !*** ./resources/js/components/Posts.js ***!
   \******************************************/
 /*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return Index; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "default", function() { return Posts; });
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var classnames__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! classnames */ "./node_modules/classnames/index.js");
@@ -66076,7 +66079,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_2__);
 /* harmony import */ var react_dom__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! react-dom */ "./node_modules/react-dom/index.js");
 /* harmony import */ var react_dom__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(react_dom__WEBPACK_IMPORTED_MODULE_3__);
-/* harmony import */ var react_truncate__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! react-truncate */ "./node_modules/react-truncate/lib/Truncate.js");
+/* harmony import */ var react_router_dom__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! react-router-dom */ "./node_modules/react-router-dom/es/index.js");
+/* harmony import */ var react_truncate__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! react-truncate */ "./node_modules/react-truncate/lib/Truncate.js");
 function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -66101,24 +66105,27 @@ function _assertThisInitialized(self) { if (self === void 0) { throw new Referen
 
 
 
-var Index =
+
+var Posts =
 /*#__PURE__*/
 function (_Component) {
-  _inherits(Index, _Component);
+  _inherits(Posts, _Component);
 
-  function Index(props) {
+  function Posts(props) {
     var _this;
 
-    _classCallCheck(this, Index);
+    _classCallCheck(this, Posts);
 
-    _this = _possibleConstructorReturn(this, _getPrototypeOf(Index).call(this, props));
+    _this = _possibleConstructorReturn(this, _getPrototypeOf(Posts).call(this, props));
+    var match = props.match;
+    var current = match.params.page ? match.params.page : 1;
     _this.state = {
       loaded: false,
       posts: [],
       last: null,
       prev: null,
       next: null,
-      current: 1
+      current: current
     };
     _this._getPosts = _this._getPosts.bind(_assertThisInitialized(_assertThisInitialized(_this)));
     _this._html = _this._html.bind(_assertThisInitialized(_assertThisInitialized(_this)));
@@ -66126,16 +66133,32 @@ function (_Component) {
     return _this;
   }
 
-  _createClass(Index, [{
+  _createClass(Posts, [{
     key: "componentDidMount",
     value: function componentDidMount() {
-      this._getPosts(1);
+      var page = this.state.current;
+
+      this._getPosts(page);
+    }
+  }, {
+    key: "componentDidUpdate",
+    value: function componentDidUpdate(prevProps) {
+      var match = this.props.match;
+
+      if (match !== prevProps.match) {
+        var current = match.params.page ? match.params.page : 1;
+
+        this._getPosts(current);
+      }
     }
   }, {
     key: "_getPosts",
     value: function _getPosts(page) {
       var _this2 = this;
 
+      this.setState({
+        loaded: false
+      });
       axios__WEBPACK_IMPORTED_MODULE_0___default.a.get("/api/posts/?page=".concat(page)).then(function (_ref) {
         var response = _ref.data;
 
@@ -66145,20 +66168,14 @@ function (_Component) {
           last: response.last_page,
           prev: _this2._idFromUrl(response.prev_page_url),
           next: _this2._idFromUrl(response.next_page_url),
-          current: page
+          current: parseInt(page)
         });
       });
     }
   }, {
     key: "_idFromUrl",
     value: function _idFromUrl(url) {
-      if (!url) {
-        return url;
-      }
-
-      var id = url.replace(/.*\?page=(\d+)/, '$1');
-      console.log(id);
-      return id;
+      return url ? url.replace(/.*\?page=(\d+)/, '$1') : null;
     }
   }, {
     key: "_html",
@@ -66211,7 +66228,7 @@ function (_Component) {
         return react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement("div", {
           className: "post",
           key: post_title
-        }, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement("h2", null, post_title), react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement("p", null, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(react_truncate__WEBPACK_IMPORTED_MODULE_4__["default"], {
+        }, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement("h2", null, post_title), react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement("p", null, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(react_truncate__WEBPACK_IMPORTED_MODULE_5__["default"], {
           lines: 5,
           ellipsis: react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement("span", null, "... ", react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement("a", {
             href: "/link/to/article"
@@ -66220,7 +66237,7 @@ function (_Component) {
           dangerouslySetInnerHTML: _this3._html(post_content)
         }))));
       }), react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement("nav", {
-        "aria-label": "Page navigation example"
+        "aria-label": "Blog navigation"
       }, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement("ul", {
         className: "pagination"
       }, navigation.map(function (_ref3) {
@@ -66231,19 +66248,16 @@ function (_Component) {
           key: label,
           className: classnames__WEBPACK_IMPORTED_MODULE_1___default()('page-item', {
             disabled: disabled
-          }),
-          onClick: function onClick(e) {
-            return _this3._getPosts(page);
-          }
-        }, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement("a", {
+          })
+        }, react__WEBPACK_IMPORTED_MODULE_2___default.a.createElement(react_router_dom__WEBPACK_IMPORTED_MODULE_4__["Link"], {
           className: "page-link",
-          href: "#"
+          to: "/posts/".concat(page)
         }, label));
       })))))));
     }
   }]);
 
-  return Index;
+  return Posts;
 }(react__WEBPACK_IMPORTED_MODULE_2__["Component"]);
 
 

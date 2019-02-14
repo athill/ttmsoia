@@ -2,18 +2,21 @@ import axios from 'axios';
 import classNames from 'classnames';
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
+import { Link } from 'react-router-dom';
 import ReactTruncate from 'react-truncate';
 
-export default class Index extends Component {
+export default class Posts extends Component {
     constructor(props) {
         super(props);
+        const { match } = props;
+        const current = match.params.page ? match.params.page : 1;
         this.state = {
             loaded: false,
             posts: [],
             last: null,
             prev: null,
             next: null,
-            current: 1
+            current
         };
         this._getPosts = this._getPosts.bind(this);
         this._html = this._html.bind(this);
@@ -21,10 +24,22 @@ export default class Index extends Component {
     }
 
     componentDidMount() {
-        this._getPosts(1);
+        const { current : page } = this.state;
+        this._getPosts(page);
+    }
+
+    componentDidUpdate(prevProps) {
+        const { match } = this.props;
+        if (match !== prevProps.match) {
+            const current = match.params.page ? match.params.page : 1;
+            this._getPosts(current);
+        }     
     }
 
     _getPosts(page) {
+        this.setState({
+            loaded: false
+        });
         axios.get(`/api/posts/?page=${page}`)
         .then(({ data : response}) => {
             this.setState({
@@ -33,18 +48,13 @@ export default class Index extends Component {
                 last: response.last_page,
                 prev: this._idFromUrl(response.prev_page_url),
                 next: this._idFromUrl(response.next_page_url),
-                current: page
+                current: parseInt(page)
             });
         });
     }
 
     _idFromUrl(url) {
-        if (!url) {
-            return url;
-        }
-        const id = url.replace(/.*\?page=(\d+)/, '$1');
-        console.log(id);
-        return id;
+        return url ? url.replace(/.*\?page=(\d+)/, '$1') : null;
     }
 
     _html(content) {
@@ -79,11 +89,11 @@ export default class Index extends Component {
                                 </div>
                             ))
                         }
-                        <nav aria-label="Page navigation example">
+                        <nav aria-label="Blog navigation">
                           <ul className="pagination">
                             {
                                 navigation.map(({ disabled, label, page }) => (
-                                    <li key={label} className={classNames('page-item', { disabled })} onClick={e => this._getPosts(page)}><a className="page-link" href="#">{ label }</a></li>    
+                                    <li key={label} className={classNames('page-item', { disabled })}><Link className="page-link" to={`/posts/${page}`}>{ label }</Link></li>
                                 ))   
                             }
                           </ul>

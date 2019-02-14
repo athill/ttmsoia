@@ -3,11 +3,14 @@ import ReactDOM from 'react-dom';
 import { Router, Route } from 'react-router-dom';
 
 import history from '../history';
-import Index from './Index';
+import Posts from './Posts';
 
 const App = () => (
     <Router history={history}>  
-        <Route path="/" exact component={Index}/>
+        <div>
+            <Route path="/" exact component={Posts}/>
+            <Route path="/posts/:page?" component={Posts}/>
+        </div>
     </Router>
 );
 
