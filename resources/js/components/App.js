@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
+import { Provider } from 'react-redux';
 import { Router, Route } from 'react-router-dom';
+
 
 import history from '../history';
 import createStore from '../store';

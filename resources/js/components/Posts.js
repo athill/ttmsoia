@@ -5,6 +5,8 @@ import ReactDOM from 'react-dom';
 import { Link } from 'react-router-dom';
 import ReactTruncate from 'react-truncate';
 
+import { getPosts } from '../modules/posts';
+
 export default class Posts extends Component {
     constructor(props) {
         super(props);

@@ -9,7 +9,7 @@ use Illuminate\Http\Request;
 class PostController extends Controller
 {
 
-    const CACHE_TIMEOUT = 60 * 24; //minutes
+    const CACHE_TIMEOUT = 60 * 24; // minutes
 
     /**
      * Display a listing of the resource.
