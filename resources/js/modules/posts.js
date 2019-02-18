@@ -4,48 +4,57 @@ import { createAction, handleActions } from 'redux-actions';
 const NAMESPACE = 'ttmsoia/posts/'
 
 const GET_PAGE = NAMESPACE + 'GET_PAGE';
+const GET_PAGE_SUCCESS = NAMESPACE + 'GET_PAGE_SUCCESS';
 const FETCH_PAGE = NAMESPACE + 'FETCH_PAGE';
+const FETCH_PAGE_SUCCESS = NAMESPACE + 'FETCH_PAGE_SUCCESS';
 
 // helpers
 export const idFromUrl = url => url ? parseInt(url.replace(/.*\?page=(\d+)/, '$1')) : null;
 
-// actions
-export const fetchPage = createAction(FETCH_PAGE, async page => {
-	// const { data : response } = await axios.get(`/api/posts/?page=${page}`);
-	// const pages = {
-	// 	[page]: {
-	// 		posts: response.data.map(post => post.post_name),
-	//         last: parseInt(response.last_page),
-	//         prev: idFromUrl(response.prev_page_url),
-	//         next: idFromUrl(response.next_page_url),
-	//         current: parseInt(page)					
-	// 	}
-	// };
-	// const posts = {};
-	// response.data.forEach(post => {
-	// 	posts[post.post_name] = post;
-	// });
-	// return {
-	// 	pages,
-	// 	posts
-	// }
-});
+const fetchPageAction = createAction(FETCH_PAGE);
 
-export const getPage = createAction(GET_PAGE, page => async (dispatch, getState) => {
-	console.log('getting page')
-	return state;
-	// let state = getState();
-	// if (!state.pages[page]) {
-	// 	await dispatch(fetchPage(page));
-	// 	state = getState();
-	// }	
-	// const currentPageData = state.pages[page];
-	// currentPageData.posts.map(id => state.posts[id]);
-	// return {
-	// 	currentPage: page,
-	// 	currentPageData
-	// }
-});
+// actions
+export const fetchPage = page => async (dispatch, getState) => {
+	
+	const { data : response } = await axios.get(`/api/posts/?page=${page}`);
+	const pages = {
+		[page]: {
+			posts: response.data.map(post => post.post_name),
+	        last: parseInt(response.last_page),
+	        prev: idFromUrl(response.prev_page_url),
+	        next: idFromUrl(response.next_page_url),
+	        current: parseInt(page)					
+		}
+	};
+	const posts = {};
+	response.data.forEach(post => {
+		posts[post.post_name] = post;
+	});
+	dispatch(createAction(FETCH_PAGE_SUCCESS)({ pages, posts }));
+};
+
+// const getPageAction = createAction(GET_PAGE);
+
+export const getPage = page => async (dispatch, getState) => {
+	dispatch(createAction(GET_PAGE));
+	let state = getState();
+
+	let pageData;
+	if (!state.posts.pages[page]) {
+		await dispatch(fetchPage(page));
+		state = getState();
+		pageData = state.posts.pages[page];
+		
+	} else {
+		pageData= state.posts.pages[page];
+	}
+	const currentPageData = {...pageData};
+	currentPageData.posts = currentPageData.posts.map(id => state.posts.posts[id]);
+	dispatch(createAction(GET_PAGE_SUCCESS)({
+		currentPage: page,
+		currentPageData
+	}));
+};
 
 
 // handlers
@@ -55,24 +64,31 @@ const handleFetchPage = (state, action) => {
 	return {
 		...state,
 		pages: {
-			existingPages,
-			newPages
+			...existingPages,
+			...newPages
 		},
 		posts: {
-			existingPosts,
-			newPosts
+			...existingPosts,
+			...newPosts
 		}
 	};
 };
 
 const handleGetPage = (state, action) => {
-	return state;
-	// const { currentPage, currentPageData } = action.payload;
-	// return {
-	// 	...state,
-	// 	currentPage,
-	// 	currentPageData
-	// };
+	return {
+		...state,
+		loaded: false
+	};
+};
+
+const handleGetPageSuccess = (state, action) => {
+	const { currentPage, currentPageData } = action.payload;
+	return {
+		...state,
+		currentPage,
+		currentPageData,
+		loaded: true
+	};
 };
 
 
@@ -81,11 +97,15 @@ export const initialState = {
 	currentPage: '',
 	currentPageData: {},
 	pages: {},
-	posts: {}
+	posts: {},
+	loaded: false
 }
 
+const reducer = handleActions({
+	[GET_PAGE_SUCCESS]: handleGetPageSuccess,
+	[FETCH_PAGE_SUCCESS]: handleFetchPage
+}, initialState);
+
+
 // reducer
-export default {
-	// [GET_PAGE]: handleGetPage,
-	// [FETCH_PAGE]: handleFetchPage
-};
+export default reducer;

@@ -5,12 +5,13 @@ import { Router, Route } from 'react-router-dom';
 
 
 import history from '../history';
-import createStore from '../store';
+import store from '../store';
 import Layout from './Layout';
 import Posts from './Posts';
 import reducers from '../modules';
 
-const store = createStore(reducers(), window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__());
+
+// const store = createStore(reducers, window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__());
 
 const App = () => (
     <Provider store={store}>

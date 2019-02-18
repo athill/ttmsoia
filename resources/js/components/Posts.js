@@ -3,60 +3,30 @@ import classNames from 'classnames';
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import { Link } from 'react-router-dom';
+import { connect } from 'react-redux';
 import ReactTruncate from 'react-truncate';
 
-import { getPosts } from '../modules/posts';
+import { getPage } from '../modules/posts';
 
-export default class Posts extends Component {
+class Posts extends Component {
     constructor(props) {
         super(props);
-        const { match } = props;
-        const current = match.params.page ? match.params.page : 1;
-        this.state = {
-            loaded: false,
-            posts: [],
-            last: null,
-            prev: null,
-            next: null,
-            current
-        };
-        this._getPosts = this._getPosts.bind(this);
         this._html = this._html.bind(this);
-        this._idFromUrl = this._idFromUrl.bind(this);
     }
 
     componentDidMount() {
-        const { current : page } = this.state;
-        this._getPosts(page);
+        const { match, getPage } = this.props;
+        const current = match.params.page ? match.params.page : 1;
+        
+        getPage(current);
     }
 
     componentDidUpdate(prevProps) {
-        const { match } = this.props;
+        const { match, getPage } = this.props;
         if (match !== prevProps.match) {
             const current = match.params.page ? match.params.page : 1;
-            this._getPosts(current);
+            getPage(current);
         }     
-    }
-
-    _getPosts(page) {
-        this.setState({
-            loaded: false
-        });
-        axios.get(`/api/posts/?page=${page}`)
-        .then(({ data : response}) => {
-            this.setState({
-                loaded: true,
-                posts: response.data,
-                last: response.last_page,
-                prev: this._idFromUrl(response.prev_page_url),
-                next: this._idFromUrl(response.next_page_url),
-                current: parseInt(page)
-            });
-        });
-    }
-
-    _idFromUrl(url) {
-        return url ? url.replace(/.*\?page=(\d+)/, '$1') : null;
     }
 
     _html(content) {
@@ -67,7 +37,7 @@ export default class Posts extends Component {
 
 
     render() {
-        const { current, last, loaded, next, posts, prev } = this.state;
+        const { current, last, loaded, next, posts, prev } = this.props;
         const navigation = [
             { disabled: current === 1, label: 'first', page: 1 },
             { disabled: current === 1, label: 'previous', page: prev },
@@ -109,3 +79,19 @@ export default class Posts extends Component {
         );
     }
 }
+
+
+const mapStateToProps = ({ posts: { currentPageData, loaded } }) => {
+    return {
+        ...currentPageData,
+        loaded
+    };
+};
+
+const mapDispatchToProps = dispatch => ({
+    getPage: page => dispatch(getPage(page))
+
+});
+
+export default connect(mapStateToProps, mapDispatchToProps)(Posts);
+

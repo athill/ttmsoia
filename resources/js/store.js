@@ -4,7 +4,7 @@ import thunkMiddleware from 'redux-thunk';
 import { createLogger } from 'redux-logger';
 
 
-import reducer from './modules';
+import reducer, { initialState } from './modules';
 
 const logger = createLogger();
 
@@ -13,14 +13,24 @@ const middleware = [
   // promiseMiddleware
 ];
 
+export const configureReduxMiddleware = () => {
+  const middleware = [
+    thunkMiddleware,
+    // promiseMiddleware,
+    // routerMiddleware(history)
+  ];
+
+  if (process.env.NODE_ENV === 'development' || window.localStorage.debug) {
+    middleware.push(createLogger());
+  }
+  return middleware;
+};
+
 
 if (process.env.NODE_ENV === 'development' || location.host === 'ttmsoia.test') {
   middleware.push(logger);
 }
 
-const createStoreWithMiddleware = applyMiddleware(...middleware)(createStore)
+const store = createStore(reducer, {}, applyMiddleware(...configureReduxMiddleware()));
 
-export default function configureStore(initialState) {
-  const store = createStoreWithMiddleware(reducer, initialState);
-  return store;
-};
+export default store;
