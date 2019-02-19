@@ -14,6 +14,15 @@ body {
 
 $red: #900;
 
+a, a:active, a:visited, a:hover {
+	color: $red;
+}
+
+/* bootstrap overrides */
+.page-link {
+	color: $red;
+}
+
 #header {
 	padding: 2em 0;
 	color: white;

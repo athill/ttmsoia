@@ -1,4 +1,3 @@
-import axios from 'axios';
 import classNames from 'classnames';
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
@@ -7,6 +6,8 @@ import { connect } from 'react-redux';
 import ReactTruncate from 'react-truncate';
 
 import { getPage } from '../modules/posts';
+import { embedYoutube } from '../util';
+
 
 class Posts extends Component {
     constructor(props) {
@@ -30,9 +31,8 @@ class Posts extends Component {
     }
 
     _html(content) {
-        const urlPattern =  /\s+https?:\/\/(youtu.be\/|www.youtube.com\/watch\?v=)(\S+)\s*/gim;
-        const content2 = content.replace(urlPattern, '<div><iframe width="560" height="315" src="https://www.youtube.com/embed/$2" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>');
-        return {__html: content2};
+        content = embedYoutube(content);
+        return {__html: content};
     }
 
 
@@ -51,11 +51,11 @@ class Posts extends Component {
                     { !loaded && <p>Loading ...</p> || (
                         <div> 
                         {
-                            posts.map(({ post_content, post_date, post_title }) => (
+                            posts.map(({ post_content, post_date, post_name, post_title }) => (
                                 <div className="post" key={post_title}>
-                                    <h2 className="d-flex justify-content-between"><Link to={``}>{ post_title }</Link> <small>{ new Date(post_date).toLocaleString() }</small></h2>
+                                    <h2 className="d-flex justify-content-between"><Link to={`/post/${post_name}`}>{ post_title }</Link> <small>{ new Date(post_date).toLocaleString() }</small></h2>
                                     <p>
-                                        <ReactTruncate lines={5} ellipsis={<span>... <a href='/link/to/article'>Read more</a></span>}>
+                                        <ReactTruncate lines={5} ellipsis={<span>... <Link to={`/post/${post_name}`}>Read more</Link></span>}>
                                             <span dangerouslySetInnerHTML={this._html(post_content)} />
                                         </ReactTruncate>
                                     </p>

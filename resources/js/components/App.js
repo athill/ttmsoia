@@ -7,6 +7,7 @@ import { Router, Route } from 'react-router-dom';
 import history from '../history';
 import store from '../store';
 import Layout from './Layout';
+import Post from './Post';
 import Posts from './Posts';
 import reducers from '../modules';
 
@@ -19,6 +20,7 @@ const App = () => (
             <Layout>
                 <Route path="/" exact component={Posts}/>
                 <Route path="/posts/:page?" component={Posts}/>
+                <Route path="/post/:id" component={Post}/>
             </Layout>
         </Router>
     </Provider>

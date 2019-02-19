@@ -10495,6 +10495,19 @@ body {
   background-color: black;
 }
 
+a,
+a:active,
+a:visited,
+a:hover {
+  color: #900;
+}
+
+/* bootstrap overrides */
+
+.page-link {
+  color: #900;
+}
+
 #header {
   padding: 2em 0;
   color: white;
