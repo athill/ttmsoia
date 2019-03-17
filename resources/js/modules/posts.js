@@ -66,14 +66,12 @@ export const getPage = page => async (dispatch, getState) => {
 // post
 export const fetchPost = id => async (dispatch, getState) => {
 	const { data : response } = await axios.get(`/api/posts/${id}`);
-	console.log('fetchPost', response);
 	dispatch(createAction(FETCH_POST_SUCCESS)(response));
 };
 
 export const getPost = id => async (dispatch, getState) => {
 	dispatch(createAction(GET_POST));
 	let state = getState();
-
 	if (!state.posts.posts[id]) {
 		await dispatch(fetchPost(id));
 		state = getState();		
@@ -141,7 +139,6 @@ const handleGetPost = (state, action) => {
 };
 
 const handleGetPostSuccess = (state, action) => {
-	console.log('handleGetPostSuccess', action.payload)
 	const { currentPost, currentPostData } = action.payload;
 	return {
 		...state,
@@ -159,7 +156,7 @@ export const initialState = {
 	currentPost: '',
 	currentPostData: {},
 	pages: {},
-	posts: {},
+	posts: [],
 	loaded: false
 }
 

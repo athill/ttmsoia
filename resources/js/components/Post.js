@@ -23,7 +23,7 @@ class Post extends Component {
     }
 
     componentDidUpdate(prevProps) {
-        const { match, getPage } = this.props;
+        const { match, getPost } = this.props;
         if (match !== prevProps.match) {
             const current = match.params.id;
             getPost(current);
@@ -31,19 +31,18 @@ class Post extends Component {
     }
 
     _html(content) {
-        content = embedYoutube(content);
+        content = content ? embedYoutube(content) : '';
         return {__html: content};
     }
 
 
     render() {
-        console.log(this.props);
         const { loaded, post_content, post_date, post_title } = this.props;
         return (
             <div className="container">
                 <div className="row justify-content-center">
                     <div id="posts" className="col-md-10">
-                    { !loaded && <p>Loading ...</p> || (
+                    { !loaded && !post_content && <p>Loading ...</p> || (
                         <div className="post" key={post_title}>
                             <h2 className="d-flex justify-content-between"><Link to={``}>{ post_title }</Link> <small>{ new Date(post_date).toLocaleString() }</small></h2>
                             <p>

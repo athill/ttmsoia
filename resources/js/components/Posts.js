@@ -31,7 +31,7 @@ class Posts extends Component {
     }
 
     _html(content) {
-        content = embedYoutube(content);
+        content = content ? embedYoutube(content) : '';
         return {__html: content};
     }
 
@@ -48,7 +48,7 @@ class Posts extends Component {
             <div className="container">
                 <div className="row justify-content-center">
                     <div id="posts" className="col-md-10">
-                    { !loaded && <p>Loading ...</p> || (
+                    { (!loaded || !posts) ? <p>Loading ...</p> : (
                         <div> 
                         {
                             posts.map(({ post_content, post_date, post_name, post_title }) => (
@@ -79,6 +79,10 @@ class Posts extends Component {
         );
     }
 }
+
+/*
+
+*/
 
 
 const mapStateToProps = ({ posts: { currentPageData, loaded } }) => {
