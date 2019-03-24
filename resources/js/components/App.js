@@ -1,12 +1,14 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
-import { Router, Route } from 'react-router-dom';
+import { Router, Route, Switch } from 'react-router-dom';
 
 
 import history from '../history';
 import store from '../store';
+import CreatePost from './CreatePost';
 import Layout from './Layout';
+import PageNotFound from './PageNotFound';
 import Post from './Post';
 import Posts from './Posts';
 import reducers from '../modules';
@@ -18,9 +20,13 @@ const App = () => (
     <Provider store={store}>
         <Router history={history}>  
             <Layout>
-                <Route path="/" exact component={Posts}/>
-                <Route path="/posts/:page?" component={Posts}/>
-                <Route path="/post/:id" component={Post}/>
+                <Switch>
+                    <Route path="/" exact component={Posts}/>
+                    <Route path="/posts/:page?" component={Posts}/>
+                    <Route path="/post/new" exasct component={CreatePost}/>
+                    <Route path="/post/:id" component={Post}/>
+                    <Route component={PageNotFound}/>
+                </Switch>
             </Layout>
         </Router>
     </Provider>
